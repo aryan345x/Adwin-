@@ -248,4 +248,86 @@ export default function DashboardPage() {
 
   const engagementComponents = useMemo(() => ({
     daily: <DailyCheckIn onClaim={handleReward} onClick={() => trackEngagement('daily')} />,
-    ad: <
+    ad: <WatchAdCard onAdWatched={handleReward} onClick={() => trackEngagement('ad')} />,
+    quiz: <MathQuizCard onClick={() => trackEngagement('quiz')} />
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [engagementData]);
+
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+       <header className="flex items-center justify-between">
+           <h1 className="text-2xl font-bold">Home</h1>
+           <div className="flex items-center gap-2 p-2 px-4 rounded-full bg-card shadow">
+             <CircleDollarSign className="w-6 h-6 text-yellow-500" />
+             {loading ? <Skeleton className="w-16 h-6" /> : <span className="font-bold text-lg">{(userData?.coins ?? 0).toLocaleString()}</span>}
+           </div>
+       </header>
+
+       <Card className="w-full shadow-lg p-0 overflow-hidden rounded-2xl">
+            <div className="relative h-40">
+                <Image src="https://placehold.co/600x400.png" layout="fill" objectFit="cover" alt="Instagram Promotion" data-ai-hint="social media background"/>
+                <div className="absolute inset-0 bg-black/40"></div>
+                 <div className="absolute bottom-0 left-0 p-4 flex items-center justify-between w-full">
+                    <p className="text-white font-semibold max-w-xs">Follow us on Instagram</p>
+                    <a href="https://www.instagram.com/aryanfashiondeals">
+                        <Button>Follow Now</Button>
+                    </a>
+                </div>
+            </div>
+       </Card>
+
+       <ParticipateAndEarn />
+       
+       <Card>
+            <CardHeader>
+                <CardTitle className="text-lg flex items-center justify-between">
+                    <span>For You</span>
+                     <Button variant="outline" size="sm" onClick={handleOptimizeLayout} disabled={isPending}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        {isPending ? 'Optimizing...' : 'Optimize Layout'}
+                    </Button>
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+                {layoutOrder.map(key => (
+                    <div key={key}>
+                        {engagementComponents[key as keyof typeof engagementComponents]}
+                    </div>
+                ))}
+            </CardContent>
+        </Card>
+
+       <Card className="w-full shadow-lg">
+        <CardHeader className="p-4">
+            <h2 className="text-lg font-bold">Offer Suggested By Us</h2>
+        </CardHeader>
+        <CardContent className="p-4 pt-0 flex items-center justify-between">
+            <div className="flex gap-4">
+                <div className="w-24 h-24 bg-muted rounded-lg"></div>
+                <div className="w-24 h-24 bg-muted rounded-lg"></div>
+                <div className="w-24 h-24 bg-muted rounded-lg"></div>
+            </div>
+        </CardContent>
+       </Card>
+
+       <AlertDialog open={isReasoningOpen} onOpenChange={setIsReasoningOpen}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                        <Sparkles className="text-primary"/>
+                        AI Layout Optimization
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-left pt-4 space-y-2">
+                        <h4 className="font-semibold text-foreground">Here's why I changed the layout:</h4>
+                        <p className="text-muted-foreground">{aiReasoning}</p>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setIsReasoningOpen(false)}>Got it!</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    </div>
+  );
+}
